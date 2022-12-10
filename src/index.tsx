@@ -7,14 +7,12 @@ import "bootstrap/dist/js/bootstrap.bundle"
 import "./styles/styles.css"
 
 
-
-
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as HTMLElement
+);
 root.render(
-  <React.StrictMode>  
+  <React.StrictMode>
     <App />
   </React.StrictMode>
 );
-
 

@@ -1,0 +1,8 @@
+export const enum actionTypes {
+    GET_POSTS = 'GET_POSTS',
+    GET_CURRENT_POST = 'GET_CURRENT_POST',
+    SET_LOADING = 'SET_LOADING',
+    EDIT_POST = 'EDIT_POST',
+    DELETE_POST = 'DELETE_POST',
+    CREATE_POST = 'CREATE_POST'
+}
