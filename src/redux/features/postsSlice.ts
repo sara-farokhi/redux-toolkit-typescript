@@ -1,13 +1,17 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { initialSates, post } from "../../interfaces/posts/postInterfaces";
 import axios from "axios";
 const BASE_URL = "http://localhost:3004/posts"
 
 // initialState
-const initialState = {
-    loading: true,
+const initialState: initialSates = {
     posts: [],
-    post: {},
-    error: null
+    loading: true,
+    post: {
+        title: "",
+        body: "",
+        id: ""
+    },
 }
 
 // get posts
@@ -20,22 +24,24 @@ export const getPosts = createAsyncThunk("posts/get",
 
 // create post
 export const createPost = createAsyncThunk("posts/create", async (newPost) => {
-    await axios.post(BASE_URL, newPost)
+    const { data } = await axios.post(BASE_URL, newPost)
+    return data
 })
 
 // edit post
 export const setCurrent = createAsyncThunk("posts/edit/currennt", async (id) => {
-    const res = axios.put(`http://localhost:3004/posts/${id}`)
+    const res = await axios.put(`http://localhost:3004/posts/${id}`)
+    return res.data
 })
 
 // edit post
-export const editPost = createAsyncThunk("posts/edit", async (updatedPosts) => {
+export const editPost = createAsyncThunk("posts/edit", async (updatedPosts: post) => {
     const id = updatedPosts.id
     const res = axios.put(`http://localhost:3004/posts/${id}`, updatedPosts)
 })
 
 // deleteItem
-export const deletePost = createAsyncThunk("posts/delete", async (id) => {
+export const deletePost = createAsyncThunk("posts/delete", async (id: number) => {
     const res = await axios.delete(`${BASE_URL}/${id}`)
     return id
 })
@@ -57,58 +63,51 @@ const postsSlice = createSlice(
         //         state.loading = false
         //         state.error = true
         //     }
-        // }
+        // }, 
+        reducers: {},
 
         extraReducers(builder) {
 
             // get posts cases
             builder
                 .addCase(getPosts.pending, (state, action) => {
-                    state.status = 'loading'
+                    state.loading = true
                 })
             builder
-                .addCase(getPosts.fulfilled, (state, action) => {
+                .addCase(getPosts.fulfilled, (state, action: PayloadAction<post[]>) => {
                     state.loading = false
                     state.posts = action.payload
                 })
             builder
                 .addCase(getPosts.rejected, (state, action) => {
                     state.loading = false
-                    state.error = true
                 })
 
             // set current
             builder
                 .addCase(setCurrent.pending, (state, action) => {
-                    state.status = 'loading'
+                    state.loading = true
                 })
             builder
-                .addCase(setCurrent.fulfilled, (state, action) => {
+                .addCase(setCurrent.fulfilled, (state, action: PayloadAction<post>) => {
                     state.loading = false
                     state.post = action.payload
                 })
             builder
                 .addCase(setCurrent.rejected, (state, action) => {
                     state.loading = false
-                    state.error = true
                 })
 
             // deletPost posts cases
             builder.addCase(deletePost.pending, (state, action) => {
                 state.loading = true
             })
-            builder.addCase(deletePost.fulfilled, (state, action) => {
+            builder.addCase(deletePost.fulfilled, (state, action: PayloadAction<number>) => {
                 state.loading = false
                 let updatedPosts = state.posts.filter(post => post.id !== action.payload)
-                console.log(updatedPosts)
                 state.posts = updatedPosts
             })
         }
-
-
-
-
-
     }
 )
 
