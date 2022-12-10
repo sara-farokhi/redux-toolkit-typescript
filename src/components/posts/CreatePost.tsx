@@ -1,22 +1,23 @@
-
-import { useSelector, useDispatch } from "react-redux"
+import {
+  useAppDispatch,
+  useAppSelector
+} from "../../hooks/useSelectorDispach"
+import { newPost } from "../../interfaces/posts/postInterfaces"
 import { useState } from "react"
 import { createPost } from "../../redux/features/postsSlice"
 import { useNavigate } from "react-router-dom"
 
-
-
 const EditPost = () => {
-  const { loading } = useSelector(state => state.post)
-  const dispatch = useDispatch()
+  const { loading } = useAppSelector(state => state.post)
+  const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const [body, setBody] = useState('')
   const [title, setTitle] = useState('')
 
 
-  const createItem = (e) => {
+  const createItem = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const data = {
+    const data: newPost = {
       body,
       title,
     }
@@ -33,7 +34,7 @@ const EditPost = () => {
         </div>
         <div className="form-group">
           <label htmlFor="exampleInputPassword1">Body</label>
-          <textarea value={body} type="text" className="form-control" placeholder="enter body" onChange={(e) => setBody(e.target.value)} />
+          <textarea value={body} className="form-control" placeholder="enter body" onChange={(e) => setBody(e.target.value)} />
         </div>
         <button type="submit" className="btn btn-sm btn-primary my-3">Submit</button>
       </form>

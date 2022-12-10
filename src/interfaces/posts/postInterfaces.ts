@@ -3,8 +3,11 @@ export interface initialSates {
     post: post,
     loading: boolean
 }
-export interface post {
+
+export interface newPost {
     title: string,
     body: string,
+}
+export interface post extends newPost {
     id: number | string
 }

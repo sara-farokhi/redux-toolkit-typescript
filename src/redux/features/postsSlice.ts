@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { initialSates, post } from "../../interfaces/posts/postInterfaces";
+import { initialSates, post, newPost } from "../../interfaces/posts/postInterfaces";
 import axios from "axios";
 const BASE_URL = "http://localhost:3004/posts"
 
@@ -23,12 +23,12 @@ export const getPosts = createAsyncThunk("posts/get",
 )
 
 // create post
-export const createPost = createAsyncThunk("posts/create", async (newPost) => {
+export const createPost = createAsyncThunk("posts/create", async (newPost: newPost) => {
     const { data } = await axios.post(BASE_URL, newPost)
     return data
 })
 
-// edit post
+// edit current post
 export const setCurrent = createAsyncThunk("posts/edit/currennt", async (id) => {
     const res = await axios.put(`http://localhost:3004/posts/${id}`)
     return res.data
@@ -36,13 +36,13 @@ export const setCurrent = createAsyncThunk("posts/edit/currennt", async (id) => 
 
 // edit post
 export const editPost = createAsyncThunk("posts/edit", async (updatedPosts: post) => {
-    const id = updatedPosts.id
-    const res = axios.put(`http://localhost:3004/posts/${id}`, updatedPosts)
+    let postId = updatedPosts.id
+    axios.patch(`http://localhost:3004/posts/${postId}`, updatedPosts)
 })
 
 // deleteItem
 export const deletePost = createAsyncThunk("posts/delete", async (id: number) => {
-    const res = await axios.delete(`${BASE_URL}/${id}`)
+     await axios.delete(`${BASE_URL}/${id}`)
     return id
 })
 

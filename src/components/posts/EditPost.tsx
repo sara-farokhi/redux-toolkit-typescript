@@ -1,14 +1,18 @@
-
 import { useParams } from "react-router-dom"
-import { useDispatch } from "react-redux"
-import { useEffect, useState } from "react"
-import {  editPost } from "../../redux/features/postsSlice"
+import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 
+import {
+  useAppDispatch,
+} from "../../hooks/useSelectorDispach"
+import { editPost } from "../../redux/features/postsSlice"
+import { post } from "../../interfaces/posts/postInterfaces"
+
+
 
 const EditPost = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { id } = useParams()
   const navigate = useNavigate()
   const [body, setBody] = useState('')
@@ -17,21 +21,21 @@ const EditPost = () => {
 
 
   useEffect(() => {
-    const setCurrent = async (id) => {
+    const setCurrent = async (id: number) => {
       const res = await axios.get(`http://localhost:3004/posts/${id}`)
       setBody(res.data.body)
       setTitle(res.data.title)
       setLoading(false)
     }
-    setCurrent(id)
+    setCurrent(Number(id!))
   }, [dispatch, id])
 
-  const UpdatePost = (e) => {
+  const UpdatePost = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const data = {
+    const data: post = {
       body,
       title,
-      id
+      id: +id!
     }
     dispatch(editPost(data))
     navigate('/posts')
@@ -46,7 +50,7 @@ const EditPost = () => {
         </div>
         <div className="form-group">
           <label htmlFor="exampleInputPassword1">Body</label>
-          <textarea value={body} type="text" className="form-control" placeholder="enter body" onChange={(e) => setBody(e.target.value)} />
+          <textarea value={body} className="form-control" placeholder="enter body" onChange={(e) => setBody(e.target.value)} />
         </div>
         <button type="submit" className="btn btn-sm btn-primary my-3">Submit</button>
       </form>
